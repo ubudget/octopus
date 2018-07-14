@@ -7,5 +7,7 @@ defmodule OctopusWeb.Router do
 
   scope "/api", OctopusWeb do
     pipe_through :api
+
+    resources "/users", UserController, except: [:new, :edit]
   end
 end
