@@ -13,7 +13,7 @@ config :octopus,
 # Configures the endpoint
 config :octopus, OctopusWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "HpKMEd980yAYQd+lw6KkDR6SFdu/3f+gvfk+yg9rqepV/lxf9hTUyNywTrbT/+Ys",
+  secret_key_base: "DbYXzAJFQHMCUWM4slg3GN0PuEo/PDD7vTeheV68zq5WneOrkyEWWTactA9cbE0x",
   render_errors: [view: OctopusWeb.ErrorView, accepts: ~w(json)],
   pubsub: [name: Octopus.PubSub,
            adapter: Phoenix.PubSub.PG2]

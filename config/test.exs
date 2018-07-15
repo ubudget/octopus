@@ -17,6 +17,3 @@ config :octopus, Octopus.Repo,
   database: "octopus_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
-
-# Speed up crypto during tests
-config :bcrypt_elixir, log_rounds: 4

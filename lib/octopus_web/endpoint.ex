@@ -33,7 +33,7 @@ defmodule OctopusWeb.Endpoint do
   plug Plug.Session,
     store: :cookie,
     key: "_octopus_key",
-    signing_salt: "pRT8R+5G"
+    signing_salt: "FMuuG7HZ"
 
   plug OctopusWeb.Router
 
