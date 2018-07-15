@@ -1,5 +1,9 @@
 defmodule Octopus.Application do
+  @moduledoc """
+  Entry point for the Octopus monolith.
+  """
   use Application
+  alias OctopusWeb.Endpoint
 
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
@@ -12,7 +16,7 @@ defmodule Octopus.Application do
       supervisor(Octopus.Repo, []),
       # Start the endpoint when the application starts
       supervisor(OctopusWeb.Endpoint, []),
-      # Start your own worker by calling: Octopus.Worker.start_link(arg1, arg2, arg3)
+      # Start your own worker by calling:
       # worker(Octopus.Worker, [arg1, arg2, arg3]),
     ]
 
@@ -25,7 +29,7 @@ defmodule Octopus.Application do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    OctopusWeb.Endpoint.config_change(changed, removed)
+    Endpoint.config_change(changed, removed)
     :ok
   end
 end
