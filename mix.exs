@@ -1,4 +1,5 @@
 defmodule Octopus.Mixfile do
+  @moduledoc false
   use Mix.Project
 
   def project do
@@ -39,7 +40,6 @@ defmodule Octopus.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:veil, "~> 0.1"},
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
     ]
   end
