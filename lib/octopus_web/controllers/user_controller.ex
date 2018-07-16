@@ -15,6 +15,8 @@ defmodule OctopusWeb.UserController do
     end
   end
 
+  # TODO: Handle user email updates.
+
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
 

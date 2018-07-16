@@ -2,7 +2,7 @@
 
 General backend component for ubudget business logic.
 
-The overall design and implementation of octopus's user registration and login
+The overall design and implementation of octopus's user registration and sign in
 system is heavily inspired by [Veil](https://github.com/zanderxyz/veil).
 
 To start your Phoenix server:

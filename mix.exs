@@ -40,6 +40,7 @@ defmodule Octopus.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:swoosh, "~> 0.15"},
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
     ]
   end

@@ -46,3 +46,7 @@ config :octopus, Octopus.Repo,
   database: "octopus_dev",
   hostname: "localhost",
   pool_size: 10
+
+# Dev mailer
+config :octopus, Octopus.Mailer,
+  adapter: Swoosh.Adapters.Local

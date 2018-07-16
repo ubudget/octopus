@@ -17,3 +17,7 @@ config :octopus, Octopus.Repo,
   database: "octopus_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Test mailer
+config :octopus, Octopus.Mailer,
+  adapter: Swoosh.Adapters.Test
