@@ -21,5 +21,7 @@ defmodule Octopus.Accounts.User do
     |> cast(attrs, [:name, :email])
     |> validate_required([:name, :email])
     |> unique_constraint(:email)
+    # Taken from https://stackoverflow.com/a/742588
+    |> validate_format(:email, ~r/^[^@\s]+@[^@\s]+\.[^@\s]+$/)
   end
 end
