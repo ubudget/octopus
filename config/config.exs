@@ -8,7 +8,9 @@ use Mix.Config
 # General application configuration
 config :octopus,
   ecto_repos: [Octopus.Repo],
-  generators: [binary_id: true]
+  generators: [binary_id: true],
+  auth_request_salt: "2/5mm5eunE3Io20vqREgr3UkEyb8JLz1oIGuko3ZXtuYy9rkzMGjLQV+mUfHEd8c",
+  session_salt: "u0l1+3qnmise4kEFLxnwlc35BGtzgAPqpdQFaJIyr4J0IMSh+JedChUbtXGWqv7C"
 
 # Configures the endpoint
 config :octopus, OctopusWeb.Endpoint,
