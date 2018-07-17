@@ -18,6 +18,7 @@ defmodule Octopus.Application do
       supervisor(OctopusWeb.Endpoint, []),
       # Start your own worker by calling:
       # worker(Octopus.Worker, [arg1, arg2, arg3]),
+      worker(Octopus.Secret, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

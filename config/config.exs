@@ -10,7 +10,10 @@ config :octopus,
   ecto_repos: [Octopus.Repo],
   generators: [binary_id: true],
   auth_request_salt: "2/5mm5eunE3Io20vqREgr3UkEyb8JLz1oIGuko3ZXtuYy9rkzMGjLQV+mUfHEd8c",
-  session_salt: "u0l1+3qnmise4kEFLxnwlc35BGtzgAPqpdQFaJIyr4J0IMSh+JedChUbtXGWqv7C"
+  auth_request_expiry: 3_600,
+  session_salt: "u0l1+3qnmise4kEFLxnwlc35BGtzgAPqpdQFaJIyr4J0IMSh+JedChUbtXGWqv7C",
+  session_expiry: 86_400 * 30,
+  refresh_expiry_inteval: 86_400
 
 # Configures the endpoint
 config :octopus, OctopusWeb.Endpoint,
