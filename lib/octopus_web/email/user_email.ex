@@ -4,8 +4,7 @@ defmodule OctopusWeb.UserEmail do
   """
   import Swoosh.Email
 
-  def registration(user) do
-    # TODO: generate signin link
+  def registration(user, link) do
     new()
     |> to({user.name, user.address})
     |> from({"Team ubudget", "team@ubudget.site"})
@@ -14,14 +13,13 @@ defmodule OctopusWeb.UserEmail do
     |> html_body("""
     <p>Hello, #{user.name}, and welcome to ubudget!</p>
 
-    <p>Please click <a href="#{}">here</a> or go to the url below to sign in.</p>
+    <p>Please click <a href="#{link}">here</a> or go to the url below to sign in.</p>
 
-    <a href="#{}">#{}</a>
+    <a href="#{link}">#{link}</a>
     """)
   end
 
-  def signin(user) do
-    # TODO: generate signin link
+  def signin(user, link) do
     new()
     |> to({user.name, user.address})
     |> from({"Team ubudget", "team@ubudget.site"})
@@ -30,9 +28,9 @@ defmodule OctopusWeb.UserEmail do
     |> html_body("""
     <p>Hello, #{user.name}, and welcome back to ubudget.</p>
 
-    <p>Please click <a href="#{}">here</a> or go to the url below to sign in.</p>
+    <p>Please click <a href="#{link}">here</a> or go to the url below to sign in.</p>
 
-    <a href="#{}">#{}</a>
+    <a href="#{link}">#{link}</a>
     """)
   end
 end

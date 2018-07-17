@@ -3,7 +3,7 @@ defmodule Octopus.Accounts.User do
   Defines the elements and validations for a User.
   """
   use Ecto.Schema
-  import Ecto.Changeset
+  import Ecto.{Changeset, Query}
   alias Octopus.Accounts.{AuthRequest, Session}
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -28,6 +28,11 @@ defmodule Octopus.Accounts.User do
     |> validate_format(:email, ~r/^[^@\s]+@[^@\s]+\.[^@\s]+$/)
     |> make_email_lowercase()
     |> unique_constraint(:email)
+  end
+
+  def unactivated(query \\ __MODULE__) do
+    from u in query,
+    where: u.activated == false
   end
 
   defp make_email_lowercase(%Ecto.Changeset{
