@@ -11,7 +11,8 @@ defmodule Octopus.Mixfile do
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: [plt_add_deps: :transitive]
     ]
   end
 
@@ -41,7 +42,9 @@ defmodule Octopus.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:swoosh, "~> 0.15"},
+      {:ex_machina, "~> 2.2", only: [:test]},
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.2", only: [:dev], runtime: false}
     ]
   end
 

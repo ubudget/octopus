@@ -38,14 +38,11 @@ defmodule Octopus.Accounts do
   Mark a user as activated.
   """
   def activate_user(%User{} = user) do
-    unless user.activated, do: user |> update_user(%{activated: true})
-  end
-
-  @doc """
-  Mark a user as deactivated to handle changed emails.
-  """
-  def deactivate_user(%User{} = user) do
-    if user.activated, do: user |> update_user(%{activated: false})
+    unless user.activated do
+      user
+      |> User.activate_changeset(true)
+      |> Repo.update()
+    end
   end
 
   @doc """
@@ -54,8 +51,15 @@ defmodule Octopus.Accounts do
   def update_user(%User{} = user, attrs) do
     user
     |> User.changeset(attrs)
+    |> maybe_deactivate() # if email changed
     |> Repo.update()
   end
+
+  defp maybe_deactivate(%Ecto.Changeset{changes: %{email: _}} = changeset) do
+    User.activate_changeset(changeset, false)
+  end
+
+  defp maybe_deactivate(changeset), do: changeset
 
   @doc """
   Deletes a User.

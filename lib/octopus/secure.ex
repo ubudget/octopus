@@ -23,7 +23,7 @@ defmodule Octopus.Secure do
     user_agent = get_user_agent(conn)
     system_time = :os.system_time() |> to_string()
     secret = Secret.get()
-    input = prefix <> ip <> (user_agent or "") <> system_time <> secret
+    input = prefix <> ip <> (user_agent || "") <> system_time <> secret
     hashed = :crypto.hash(:sha512, input)
     Base.encode32(hashed)
   end

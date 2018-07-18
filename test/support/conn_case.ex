@@ -21,6 +21,7 @@ defmodule OctopusWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+      import Octopus.Factory
       import OctopusWeb.Router.Helpers
 
       # The default endpoint for testing

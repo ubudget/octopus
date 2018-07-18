@@ -15,6 +15,8 @@ defmodule OctopusWeb.FallbackController do
   def call(conn, {:error, :not_found}) do
     conn
     |> put_status(:not_found)
-    |> render(OctopusWeb.ErrorView, :"404")
+    |> put_view(OctopusWeb.ErrorView)
+    |> render(:"404")
+    # see https://github.com/phoenixframework/phoenix/pull/2426
   end
 end

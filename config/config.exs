@@ -13,7 +13,7 @@ config :octopus,
   auth_request_expiry: 3_600,
   session_salt: "u0l1+3qnmise4kEFLxnwlc35BGtzgAPqpdQFaJIyr4J0IMSh+JedChUbtXGWqv7C",
   session_expiry: 86_400 * 30,
-  refresh_expiry_inteval: 86_400
+  refresh_expiry_interval: 86_400
 
 # Configures the endpoint
 config :octopus, OctopusWeb.Endpoint,

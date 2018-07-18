@@ -36,7 +36,7 @@ defmodule OctopusWeb.UserController do
     link = build_signin_url(conn, req)
 
     user
-    |> email_fn.(user, link)
+    |> email_fn.(link)
     |> Mailer.deliver()
   end
 
