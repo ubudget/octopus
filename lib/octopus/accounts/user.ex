@@ -2,10 +2,8 @@ defmodule Octopus.Accounts.User do
   @moduledoc """
   Defines the elements and validations for a User.
   """
-  # TODO: clean up Veil associations if not necessary
   use Ecto.Schema
   import Ecto.{Changeset, Query}
-  # alias Octopus.Accounts.{AuthRequest, Session}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -14,13 +12,9 @@ defmodule Octopus.Accounts.User do
     field :name, :string
     field :activated, :boolean, default: false
 
-    # has_many :auth_requests, AuthRequest
-    # has_many :sessions, Session
-
     timestamps()
   end
 
-  @doc false
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:name, :email])
@@ -32,7 +26,6 @@ defmodule Octopus.Accounts.User do
     |> unique_constraint(:email)
   end
 
-  @doc false
   def activate_changeset(user, activated), do: user |> change(%{activated: activated})
 
   def unactivated(query \\ __MODULE__) do

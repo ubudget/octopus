@@ -17,7 +17,6 @@ defmodule Octopus.Accounts.AuthRequest do
     timestamps()
   end
 
-  @doc false
   def changeset(auth_request, attrs) do
     auth_request
     |> cast(attrs, [:secure_hash, :token, :ip, :user_id])

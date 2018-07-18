@@ -29,20 +29,19 @@ defmodule Octopus.AuthTest do
   describe "requests" do
     def request_fixture(%{conn: conn, user: user}) do
       {:ok, %AuthRequest{} = req} = Auth.create_auth_request(conn, user)
-      req
+      Repo.preload(req, :user)
     end
 
     test "create_auth_request creates a valid request", %{conn: conn, user: user} do
-      user_id = user.id
       assert {:ok, %AuthRequest{} = req} = Auth.create_auth_request(conn, user)
-      assert {:ok, ^user_id} = verify(req)
+      assert verify(req) == {:ok, user.id}
     end
 
     # TODO: review if testing rejection of invalid Plug.Conn is necessary
 
     test "create_auth_request rejects invalid user", %{conn: conn} do
-      assert {:error, %Ecto.Changeset{}}
-        = Auth.create_auth_request(conn, %User{})
+      assert {:error, %Ecto.Changeset{}} =
+        Auth.create_auth_request(conn, %User{})
     end
 
     test "get_auth_request! returns a req with the given secure hash", c do
@@ -51,8 +50,8 @@ defmodule Octopus.AuthTest do
     end
 
     test "verify validates a live token", c do
-      %{user_id: user_id} = req = request_fixture(c)
-      assert {:ok, ^user_id} = Auth.verify(req)
+      req = request_fixture(c)
+      assert Auth.verify(req) == {:ok, req.user.id}
     end
 
     test "verify rejects an expired token", c do
@@ -61,7 +60,7 @@ defmodule Octopus.AuthTest do
       Application.put_env(:octopus, :auth_request_expiry, -1)
 
       req = request_fixture(c)
-      assert {:error, :expired} = Auth.verify(req)
+      assert Auth.verify(req) == {:error, :expired}
 
       Application.put_env(:octopus, :auth_request_expiry, expiry)
     end
@@ -92,20 +91,19 @@ defmodule Octopus.AuthTest do
   describe "sessions" do
     def session_fixture(%{conn: conn, user: user}) do
       {:ok, %Session{} = session} = Auth.create_session(conn, user)
-      session
+      Repo.preload(session, :user)
     end
 
     test "create_session creates a valid session", %{conn: conn, user: user} do
-      user_id = user.id
       assert {:ok, %Session{} = session} = Auth.create_session(conn, user)
-      assert {:ok, ^user_id} = verify(session)
+      assert verify(session) == {:ok, user.id}
     end
 
     # TODO: review if testing rejection of invalid Plug.Conn is necessary
 
     test "create_session rejects invalid user", %{conn: conn} do
-      assert {:error, %Ecto.Changeset{}}
-        = Auth.create_session(conn, %User{})
+      assert {:error, %Ecto.Changeset{}} =
+        Auth.create_session(conn, %User{})
     end
 
     test "get_session! returns a session with the given secure hash", c do
@@ -114,8 +112,8 @@ defmodule Octopus.AuthTest do
     end
 
     test "verify validates a live token", c do
-      %{user_id: user_id} = session = session_fixture(c)
-      assert {:ok, ^user_id} = Auth.verify(session)
+      session = session_fixture(c)
+      assert Auth.verify(session) == {:ok, session.user.id}
     end
 
     test "verify rejects an expired token", c do
@@ -124,7 +122,7 @@ defmodule Octopus.AuthTest do
       Application.put_env(:octopus, :session_expiry, -1)
 
       session = session_fixture(c)
-      assert {:error, :expired} = Auth.verify(session)
+      assert Auth.verify(session) == {:error, :expired}
 
       Application.put_env(:octopus, :session_expiry, expiry)
     end

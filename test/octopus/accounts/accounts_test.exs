@@ -104,13 +104,13 @@ defmodule Octopus.AccountsTest do
 
     test "delete_unactivated_users deletes unactivated users" do
       user = user_fixture()
-      assert {1, nil} = Accounts.delete_unactivated_users()
+      assert Accounts.delete_unactivated_users() == {1, nil}
       assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
     end
 
     test "delete_unactivated_users leaves activated users" do
       {:ok, user} = user_fixture() |> Accounts.activate_user()
-      assert {0, nil} = Accounts.delete_unactivated_users()
+      assert Accounts.delete_unactivated_users() == {0, nil}
       assert user == Accounts.get_user!(user.id)
     end
 

@@ -34,7 +34,11 @@ defmodule Octopus.Accounts.Auth do
 
   Raises `Ecto.NoResultsError` if the AuthRequest does not exist.
   """
-  def get_auth_request!(secure_hash), do: Repo.get_by!(AuthRequest, secure_hash: secure_hash)
+  def get_auth_request!(secure_hash) do
+    AuthRequest
+    |> Repo.get_by!(secure_hash: secure_hash)
+    |> Repo.preload(:user)
+  end
 
   @doc """
   Verify that the token in the specified auth request or session is valid.
@@ -71,7 +75,11 @@ defmodule Octopus.Accounts.Auth do
 
   Raises `Ecto.NoResultsError` if the Session does not exist.
   """
-  def get_session!(secure_hash), do: Repo.get_by!(Session, secure_hash: secure_hash)
+  def get_session!(secure_hash) do
+    Session
+    |> Repo.get_by!(secure_hash: secure_hash)
+    |> Repo.preload(:user)
+  end
 
   @doc """
   Extends a session by resetting the token in the database.
