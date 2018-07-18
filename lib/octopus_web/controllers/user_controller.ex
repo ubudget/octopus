@@ -8,12 +8,15 @@ defmodule OctopusWeb.UserController do
 
   action_fallback OctopusWeb.FallbackController
 
-  def create(conn, %{"user" => %{"email" => email} = user_params}) do
-    if user = Accounts.get_user_by_email(email) do
-      auth(conn, user, false)
+  def create(conn, %{"user" => user_params}) do
+    # TODO: this needs refactored, but assigning the value of if/else silences
+    # pattern matching based error that comes from
+    # with {:ok, _} <- Accounts.create_user(...) do
+    if user = Accounts.get_user_by_email(user_params["email"]) do
+      conn |> auth(user, false) |> render("ok.json")
     else
       with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
-        auth(conn, user, true)
+        conn |> auth(user, true) |> render("ok.json")
       end
     end
   end
@@ -21,23 +24,22 @@ defmodule OctopusWeb.UserController do
   defp auth(conn, user, new_registration) do
     with {:ok, %AuthRequest{} = req} <- Auth.create_auth_request(conn, user),
          {:ok, _email} <- handle_email(conn, user, req, new_registration) do
-      render(conn, "ok.json")
+      conn
     end
   end
 
   defp handle_email(conn, user, req, new_registration) do
-    # TODO: good candidate for refactoring, probably
-    email_fn = if new_registration do
-      &UserEmail.registration/2
-    else
-      &UserEmail.signin/2
-    end
-
     link = build_signin_url(conn, req)
-
-    user
-    |> email_fn.(link)
-    |> Mailer.deliver()
+    email = case {user, new_registration} do
+      {_, true} ->
+        UserEmail.registration(user, link)
+      {%{activated: false}, false} ->
+        UserEmail.reactivate(user, link)
+      _ ->
+        UserEmail.signin(user, link)
+    end
+    # TODO: optimize this by making it an async call
+    Mailer.deliver(email)
   end
 
   defp build_signin_url(conn, req) do
@@ -46,22 +48,18 @@ defmodule OctopusWeb.UserController do
     Helpers.url(uri) <> path
   end
 
-  def update(conn, %{"id" => id, "user" => %{"email" => _} = user_params}) do
-    user = Accounts.get_user!(id)
-    user_params = Map.put(user_params, "verified", false)
-
-    with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
-      render(conn, "show.json", user: user)
-    end
-  end
-
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
 
     with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
-      render(conn, "show.json", user: user)
+      conn
+      |> maybe_auth(user)
+      |> render("show.json", user: user)
     end
   end
+
+  defp maybe_auth(conn, %{activated: true} = user), do: conn
+  defp maybe_auth(conn, user), do: auth(conn, user, false)
 
   def delete(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)

@@ -23,6 +23,8 @@ defmodule Octopus.Accounts do
   @doc """
   Gets a user by email.
   """
+  def get_user_by_email(nil), do: nil
+
   def get_user_by_email(email), do: Repo.get_by(User, email: email |> String.downcase())
 
   @doc """
@@ -46,16 +48,16 @@ defmodule Octopus.Accounts do
   end
 
   @doc """
-  Updates a user.
+  Updates a user, deactivating them if their email changes.
   """
   def update_user(%User{} = user, attrs) do
     user
     |> User.changeset(attrs)
-    |> maybe_deactivate() # if email changed
+    |> maybe_deactivate()
     |> Repo.update()
   end
 
-  defp maybe_deactivate(%Ecto.Changeset{changes: %{email: _}} = changeset) do
+  defp maybe_deactivate(%Ecto.Changeset{changes: %{email: _}, data: %{activated: true}} = changeset) do
     User.activate_changeset(changeset, false)
   end
 

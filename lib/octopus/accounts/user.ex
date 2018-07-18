@@ -18,7 +18,7 @@ defmodule Octopus.Accounts.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:name, :email])
-    |> validate_required([:name, :email])
+    |> validate_required([:email])
     |> validate_length(:name, min: 1, max: 16)
     # Taken from https://stackoverflow.com/a/742588
     |> validate_format(:email, ~r/^[^@\s]+@[^@\s]+\.[^@\s]+$/)
