@@ -58,7 +58,7 @@ defmodule OctopusWeb.UserController do
     end
   end
 
-  defp maybe_auth(conn, %{activated: true} = user), do: conn
+  defp maybe_auth(conn, %{activated: true}), do: conn
   defp maybe_auth(conn, user), do: auth(conn, user, false)
 
   def delete(conn, %{"id" => id}) do
