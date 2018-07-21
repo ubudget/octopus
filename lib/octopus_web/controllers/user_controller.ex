@@ -6,7 +6,7 @@ defmodule OctopusWeb.UserController do
   alias OctopusWeb.{Mailer, Router.Helpers, UserEmail}
   alias Phoenix.Controller
 
-  action_fallback OctopusWeb.FallbackController
+  action_fallback(OctopusWeb.FallbackController)
 
   def create(conn, %{"user" => user_params}) do
     # TODO: this needs refactored, but assigning the value of if/else silences
@@ -30,21 +30,26 @@ defmodule OctopusWeb.UserController do
 
   defp handle_email(conn, user, req, new_registration) do
     link = build_signin_url(conn, req)
-    email = case {user, new_registration} do
-      {_, true} ->
-        UserEmail.registration(user, link)
-      {%{activated: false}, false} ->
-        UserEmail.reactivate(user, link)
-      _ ->
-        UserEmail.signin(user, link)
-    end
+
+    email =
+      case {user, new_registration} do
+        {_, true} ->
+          UserEmail.registration(user, link)
+
+        {%{activated: false}, false} ->
+          UserEmail.reactivate(user, link)
+
+        _ ->
+          UserEmail.signin(user, link)
+      end
+
     # TODO: optimize this by making it an async call
     Mailer.deliver(email)
   end
 
   defp build_signin_url(conn, req) do
     uri = Controller.endpoint_module(conn).struct_url()
-    path = Helpers.session_path(conn, :create, [secure_hash: req.secure_hash])
+    path = Helpers.session_path(conn, :create, secure_hash: req.secure_hash)
     Helpers.url(uri) <> path
   end
 
@@ -63,6 +68,7 @@ defmodule OctopusWeb.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
+
     with {:ok, %User{}} <- Accounts.delete_user(user) do
       send_resp(conn, :no_content, "")
     end

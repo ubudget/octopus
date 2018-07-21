@@ -3,7 +3,7 @@ defmodule OctopusWeb.SessionController do
   alias Octopus.Accounts
   alias Octopus.Accounts.Auth
 
-  action_fallback OctopusWeb.FallbackController
+  action_fallback(OctopusWeb.FallbackController)
 
   def create(conn, %{"request" => secure_hash}) do
     with {:ok, req} <- Auth.get_request(secure_hash),
@@ -16,9 +16,10 @@ defmodule OctopusWeb.SessionController do
   end
 
   def delete(conn, %{"id" => secure_hash}) do
-    with {:ok, _} <- secure_hash
-                     |> Auth.get_session!()
-                     |> Auth.delete() do
+    with {:ok, _} <-
+           secure_hash
+           |> Auth.get_session!()
+           |> Auth.delete() do
       send_resp(conn, :no_content, "")
     end
   end

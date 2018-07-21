@@ -21,7 +21,7 @@ defmodule OctopusWeb.Plugs.UserIdTest do
   setup do
     user = insert(:user)
 
-    [session: session_with_token(user)]
+  [session: session_with_token(user)]
   end
 
   test "ignores an unsecured conn" do
@@ -31,9 +31,11 @@ defmodule OctopusWeb.Plugs.UserIdTest do
   end
 
   test "assigns to a secured conn", %{session: session} do
-    conn = build_test_conn()
-           |> set_param("session", session.secure_hash)
-           |> UserId.call(%{})
+    conn =
+      build_test_conn()
+      |> set_param("session", session.secure_hash)
+      |> UserId.call(%{})
+
     assert conn.assigns[:user_id] == session.user.id
     assert conn.assigns[:session] == session.secure_hash
   end
@@ -50,9 +52,11 @@ defmodule OctopusWeb.Plugs.UserIdTest do
     Application.put_env(:octopus, :refresh_expiry_interval, -1)
 
     token = session.token
-    conn = build_test_conn()
-           |> set_param("session", session.secure_hash)
-           |> UserId.call(%{})
+
+    conn =
+      build_test_conn()
+      |> set_param("session", session.secure_hash)
+      |> UserId.call(%{})
 
     assert conn.assigns[:user_id] == session.user.id
     assert conn.assigns[:session] == session.secure_hash

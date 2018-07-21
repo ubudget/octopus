@@ -48,5 +48,4 @@ config :octopus, Octopus.Repo,
   pool_size: 10
 
 # Dev mailer
-config :octopus, OctopusWeb.Mailer,
-  adapter: Swoosh.Adapters.Local
+config :octopus, OctopusWeb.Mailer, adapter: Swoosh.Adapters.Local

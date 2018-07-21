@@ -31,10 +31,11 @@ defmodule OctopusWeb.ConnCase do
 
   setup tags do
     :ok = Sandbox.checkout(Octopus.Repo)
+
     unless tags[:async] do
       Sandbox.mode(Octopus.Repo, {:shared, self()})
     end
+
     {:ok, conn: ConnTest.build_conn()}
   end
-
 end

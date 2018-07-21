@@ -9,10 +9,11 @@ defmodule OctopusWeb.ChangesetViewTest do
 
   test "renders changeset error" do
     user_changeset = Accounts.change_user(%User{})
+
     assert render(
-      OctopusWeb.ChangesetView,
-      "error.json",
-      changeset: user_changeset
-    ) == %{errors: %{email: ["can't be blank"]}}
+             OctopusWeb.ChangesetView,
+             "error.json",
+             changeset: user_changeset
+           ) == %{errors: %{email: ["can't be blank"]}}
   end
 end

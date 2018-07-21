@@ -9,10 +9,10 @@ defmodule Octopus.Accounts.Session do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "sessions" do
-    field :secure_hash, :string
-    field :token, :string
-    field :ip, :string
-    belongs_to :user, User
+    field(:secure_hash, :string)
+    field(:token, :string)
+    field(:ip, :string)
+    belongs_to(:user, User)
 
     timestamps()
   end

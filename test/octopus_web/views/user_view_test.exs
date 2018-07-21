@@ -8,10 +8,9 @@ defmodule OctopusWeb.UserViewTest do
 
   test "renders show.json" do
     user = insert(:user)
+
     assert render(OctopusWeb.UserView, "show.json", user: user) ==
-      %{data: %{id: user.id,
-                name: user.name,
-                email: user.email}}
+             %{data: %{id: user.id, name: user.name, email: user.email}}
   end
 
   test "renders ok.json" do

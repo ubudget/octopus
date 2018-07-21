@@ -11,7 +11,7 @@ defmodule Octopus.Factory do
   def user_factory do
     %User{
       name: "John Q. Test",
-      email: sequence(:email, &"jqt.#{&1}@email.com"),
+      email: sequence(:email, &"jqt.#{&1}@email.com")
     }
   end
 
@@ -23,7 +23,7 @@ defmodule Octopus.Factory do
       user: build(:user),
       ip: "127.0.0.1",
       secure_hash: sequence("secret"),
-      token: "",
+      token: ""
     }
   end
 
@@ -32,19 +32,17 @@ defmodule Octopus.Factory do
       user: build(:user),
       ip: "127.0.0.1",
       secure_hash: sequence("secret"),
-      token: "",
+      token: ""
     }
   end
 
   def request_with_token(user) do
-    %{build(:request, user: user) |
-      token: Token.sign(Endpoint, request_salt(), user.id)}
+    %{build(:request, user: user) | token: Token.sign(Endpoint, request_salt(), user.id)}
     |> insert
   end
 
   def session_with_token(user) do
-    %{build(:session, user: user) |
-      token: Token.sign(Endpoint, session_salt(), user.id)}
+    %{build(:session, user: user) | token: Token.sign(Endpoint, session_salt(), user.id)}
     |> insert
   end
 end

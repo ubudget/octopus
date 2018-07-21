@@ -57,7 +57,9 @@ defmodule Octopus.Accounts do
     |> Repo.update()
   end
 
-  defp maybe_deactivate(%Ecto.Changeset{changes: %{email: _}, data: %{activated: true}} = changeset) do
+  defp maybe_deactivate(
+         %Ecto.Changeset{changes: %{email: _}, data: %{activated: true}} = changeset
+       ) do
     User.activate_changeset(changeset, false)
   end
 

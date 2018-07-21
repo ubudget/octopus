@@ -18,5 +18,4 @@ config :octopus, Octopus.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # Test mailer
-config :octopus, OctopusWeb.Mailer,
-  adapter: Swoosh.Adapters.Test
+config :octopus, OctopusWeb.Mailer, adapter: Swoosh.Adapters.Test

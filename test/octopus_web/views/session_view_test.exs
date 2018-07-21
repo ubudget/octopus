@@ -9,7 +9,8 @@ defmodule OctopusWeb.SessionViewTest do
   test "renders show.json" do
     user = insert(:user)
     session = insert(:session, user: user)
+
     assert render(OctopusWeb.SessionView, "show.json", session: session) ==
-      %{data: %{secure_hash: session.secure_hash}}
+             %{data: %{secure_hash: session.secure_hash}}
   end
 end

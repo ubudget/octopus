@@ -36,9 +36,10 @@ defmodule Octopus.AccountsTest do
 
     test "get_user_by_email finds a user given its uppercase email" do
       user = user_fixture()
+
       assert user.email
-      |> String.upcase()
-      |> Accounts.get_user_by_email() == user
+             |> String.upcase()
+             |> Accounts.get_user_by_email() == user
     end
 
     test "create_user/1 with valid data creates a user" do

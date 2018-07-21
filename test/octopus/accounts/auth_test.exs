@@ -10,8 +10,7 @@ defmodule Octopus.AuthTest do
   setup do
     user = insert(:user)
 
-    [request: request_with_token(user),
-    session: session_with_token(user)]
+    [request: request_with_token(user), session: session_with_token(user)]
   end
 
   defp verify(%Request{} = req) do
@@ -36,8 +35,7 @@ defmodule Octopus.AuthTest do
 
     test "create_request rejects invalid user" do
       conn = build_conn()
-      assert {:error, %Ecto.Changeset{}} =
-        Auth.create_request(conn, %User{})
+      assert {:error, %Ecto.Changeset{}} = Auth.create_request(conn, %User{})
     end
 
     test "get_request! returns a req with the given secure hash", %{request: request} do
@@ -60,6 +58,7 @@ defmodule Octopus.AuthTest do
 
     test "delete/1 deletes a request", %{request: request} do
       assert {:ok, request} = Auth.delete(request)
+
       assert_raise Ecto.NoResultsError, fn ->
         Auth.get_request!(request.secure_hash)
       end
@@ -71,6 +70,7 @@ defmodule Octopus.AuthTest do
       Application.put_env(:octopus, :request_expiry, -1)
 
       :ok = Auth.delete_expired_requests()
+
       assert_raise Ecto.NoResultsError, fn ->
         Auth.get_request!(request.secure_hash)
       end
@@ -89,8 +89,7 @@ defmodule Octopus.AuthTest do
 
     test "create_session rejects invalid user" do
       conn = build_conn()
-      assert {:error, %Ecto.Changeset{}} =
-        Auth.create_session(conn, %User{})
+      assert {:error, %Ecto.Changeset{}} = Auth.create_session(conn, %User{})
     end
 
     test "get_session! returns a session with the given secure hash", %{session: session} do
@@ -122,13 +121,14 @@ defmodule Octopus.AuthTest do
       Application.put_env(:octopus, :refresh_expiry_interval, expiry)
     end
 
-    test "extend_session ignores a session that is too young", %{session: session}  do
+    test "extend_session ignores a session that is too young", %{session: session} do
       assert is_nil(Auth.extend_session(session))
       assert Auth.get_session!(session.secure_hash) == session
     end
 
     test "delete/1 deletes a session", %{session: session} do
       assert {:ok, session} = Auth.delete(session)
+
       assert_raise Ecto.NoResultsError, fn ->
         Auth.get_session!(session.secure_hash)
       end
@@ -140,6 +140,7 @@ defmodule Octopus.AuthTest do
       Application.put_env(:octopus, :session_expiry, -1)
 
       :ok = Auth.delete_expired_sessions()
+
       assert_raise Ecto.NoResultsError, fn ->
         Auth.get_session!(session.secure_hash)
       end
@@ -149,6 +150,7 @@ defmodule Octopus.AuthTest do
 
     test "delete_session! deletes a session by unique hash", %{session: session} do
       assert {:ok, session} = Auth.delete_session!(session.secure_hash)
+
       assert_raise Ecto.NoResultsError, fn ->
         Auth.get_session!(session.secure_hash)
       end

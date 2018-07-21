@@ -24,7 +24,7 @@ defmodule Octopus.Accounts.Auth do
       secure_hash: secure_hash,
       token: token,
       ip: Secure.get_user_ip(conn),
-      user_id: user.id,
+      user_id: user.id
     })
     |> Repo.insert()
   end
@@ -44,9 +44,10 @@ defmodule Octopus.Accounts.Auth do
   Returns a resuest by its unique secure hash, or nil.
   """
   def get_request(secure_hash) do
-    if request = Request
-                 |> Repo.get_by(secure_hash: secure_hash)
-                 |> Repo.preload(:user) do
+    if request =
+         Request
+         |> Repo.get_by(secure_hash: secure_hash)
+         |> Repo.preload(:user) do
       {:ok, request}
     else
       {:error, :not_found}
@@ -78,7 +79,7 @@ defmodule Octopus.Accounts.Auth do
       secure_hash: secure_hash,
       token: token,
       ip: Secure.get_user_ip(conn),
-      user_id: user.id,
+      user_id: user.id
     })
     |> Repo.insert()
   end
@@ -98,9 +99,10 @@ defmodule Octopus.Accounts.Auth do
   Returns a session by its unique secure hash, or nil.
   """
   def get_session(secure_hash) do
-    if session = Session
-                 |> Repo.get_by(secure_hash: secure_hash)
-                 |> Repo.preload(:user) do
+    if session =
+         Session
+         |> Repo.get_by(secure_hash: secure_hash)
+         |> Repo.preload(:user) do
       {:ok, session}
     else
       {:error, :not_found}
@@ -113,18 +115,22 @@ defmodule Octopus.Accounts.Auth do
   def extend_session(%Session{token: token, user_id: user_id} = session) do
     # TODO: does extend_session need to ensure that a session is still valid?
     max_age = Application.fetch_env!(:octopus, :refresh_expiry_interval)
+
     case verify_session_token(token, max_age) do
       {:error, :expired} ->
         session
         |> Session.changeset(%{token: create_session_token(user_id)})
         |> Repo.update()
+
       _ ->
         nil
     end
   end
 
   defp create_session_token(user_id), do: Token.sign(Endpoint, session_salt(), user_id)
-  defp verify_session_token(token, max_age), do: Token.verify(Endpoint, session_salt(), token, max_age: max_age)
+
+  defp verify_session_token(token, max_age),
+    do: Token.verify(Endpoint, session_salt(), token, max_age: max_age)
 
   @doc """
   Deletes an auth request or session.
@@ -159,7 +165,7 @@ defmodule Octopus.Accounts.Auth do
   end
 
   defp delete_expired(list) when is_list(list) do
-    Enum.each(list, fn(record) ->
+    Enum.each(list, fn record ->
       case verify(record) do
         {:error, _} -> delete(record)
         {:ok, _} -> nil
