@@ -21,7 +21,7 @@ defmodule OctopusWeb.Plugs.UserIdTest do
   setup do
     user = insert(:user)
 
-  [session: session_with_token(user)]
+    [session: session_with_token(user)]
   end
 
   test "ignores an unsecured conn" do
