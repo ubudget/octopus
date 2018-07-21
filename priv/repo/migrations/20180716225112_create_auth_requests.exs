@@ -3,7 +3,7 @@ defmodule Octopus.Repo.Migrations.CreateAuthRequests do
   use Ecto.Migration
 
   def change do
-    create table(:auth_requests, primary_key: false) do
+    create table(:requests, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :secure_hash, :string
       add :token, :string
@@ -13,6 +13,7 @@ defmodule Octopus.Repo.Migrations.CreateAuthRequests do
       timestamps()
     end
 
-    create index(:auth_requests, [:user_id])
+    create index(:requests, [:user_id])
+    create index(:requests, [:secure_hash])
   end
 end

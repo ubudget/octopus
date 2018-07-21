@@ -2,7 +2,7 @@ defmodule OctopusWeb.UserController do
   use OctopusWeb, :controller
 
   alias Octopus.Accounts
-  alias Octopus.Accounts.{Auth, AuthRequest, User}
+  alias Octopus.Accounts.{Auth, Request, User}
   alias OctopusWeb.{Mailer, Router.Helpers, UserEmail}
   alias Phoenix.Controller
 
@@ -22,7 +22,7 @@ defmodule OctopusWeb.UserController do
   end
 
   defp auth(conn, user, new_registration) do
-    with {:ok, %AuthRequest{} = req} <- Auth.create_auth_request(conn, user),
+    with {:ok, %Request{} = req} <- Auth.create_request(conn, user),
          {:ok, _email} <- handle_email(conn, user, req, new_registration) do
       conn
     end

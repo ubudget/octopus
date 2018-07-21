@@ -14,5 +14,6 @@ defmodule Octopus.Repo.Migrations.CreateSessions do
     end
 
     create index(:sessions, [:user_id])
+    create index(:sessions, [:secure_hash])
   end
 end

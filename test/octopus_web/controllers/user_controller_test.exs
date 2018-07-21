@@ -1,10 +1,11 @@
 defmodule OctopusWeb.UserControllerTest do
   @moduledoc false
   use OctopusWeb.ConnCase
-  alias Octopus.{Accounts, Repo, Secure}
-  alias Octopus.Accounts.{AuthRequest, User}
-  alias OctopusWeb.UserEmail
+  alias Octopus.Accounts
+  alias Octopus.Accounts.{Request, User}
+  alias Octopus.{Repo, Secure}
   alias OctopusWeb.Router.Helpers
+  alias OctopusWeb.UserEmail
   alias Phoenix.Controller
   import Octopus.Factory
   import Swoosh.TestAssertions
@@ -23,7 +24,7 @@ defmodule OctopusWeb.UserControllerTest do
 
   defp build_url(conn, req) do
     uri = Controller.endpoint_module(conn).struct_url()
-    path = Helpers.session_path(conn, :create, [secure_hash: req.secure_hash])
+    path = Helpers.session_path(conn, :create, secure_hash: req.secure_hash)
     Helpers.url(uri) <> path
   end
 
@@ -32,7 +33,7 @@ defmodule OctopusWeb.UserControllerTest do
       conn = post conn, user_path(conn, :create), user: @valid_attrs
       assert %{"ok" => true} = json_response(conn, 200)
 
-      req = Repo.get_by(AuthRequest, ip: Secure.get_user_ip(conn))
+      req = Repo.get_by(Request, ip: Secure.get_user_ip(conn))
 
       assert %User{} = user = Accounts.get_user_by_email("jqt@email.com")
       assert user.name == "John Q. Test"
@@ -44,7 +45,7 @@ defmodule OctopusWeb.UserControllerTest do
       conn = post conn, user_path(conn, :create), user: Map.from_struct(user)
       assert %{"ok" => true} = json_response(conn, 200)
 
-      req = Repo.get_by(AuthRequest, ip: Secure.get_user_ip(conn))
+      req = Repo.get_by(Request, ip: Secure.get_user_ip(conn))
 
       assert Accounts.get_user!(user.id) == user
       assert_email_sent UserEmail.signin(user, build_url(conn, req))
@@ -62,7 +63,7 @@ defmodule OctopusWeb.UserControllerTest do
       conn = put conn, user_path(conn, :update, user), user: @update_attrs
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      req = Repo.get_by(AuthRequest, ip: Secure.get_user_ip(conn))
+      req = Repo.get_by(Request, ip: Secure.get_user_ip(conn))
 
       assert %User{} = user = Accounts.get_user!(id)
       assert user.name == "JQT"

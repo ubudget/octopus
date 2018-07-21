@@ -13,4 +13,8 @@ defmodule OctopusWeb.UserViewTest do
                 name: user.name,
                 email: user.email}}
   end
+
+  test "renders ok.json" do
+    assert render(OctopusWeb.UserView, "ok.json", []) == %{ok: true}
+  end
 end

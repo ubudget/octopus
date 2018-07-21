@@ -3,24 +3,24 @@ defmodule Octopus.Accounts.Auth do
   Context for auth related flows.
   """
   import Ecto.Query, warn: false
-  alias Octopus.Accounts.{AuthRequest, Session, User}
+  alias Octopus.Accounts.{Request, Session, User}
   alias Octopus.Repo
   alias Octopus.Secure
   alias OctopusWeb.Endpoint
   alias Phoenix.Token
 
-  defp auth_request_salt, do: Application.fetch_env!(:octopus, :auth_request_salt)
+  defp request_salt, do: Application.fetch_env!(:octopus, :request_salt)
   defp session_salt, do: Application.fetch_env!(:octopus, :session_salt)
 
   @doc """
   Creates an auth request.
   """
-  def create_auth_request(conn, %User{} = user) do
-    token = Token.sign(Endpoint, auth_request_salt(), user.id)
+  def create_request(conn, %User{} = user) do
+    token = Token.sign(Endpoint, request_salt(), user.id)
     secure_hash = Secure.generate_hash(conn)
 
-    %AuthRequest{}
-    |> AuthRequest.changeset(%{
+    %Request{}
+    |> Request.changeset(%{
       secure_hash: secure_hash,
       token: token,
       ip: Secure.get_user_ip(conn),
@@ -32,20 +32,33 @@ defmodule Octopus.Accounts.Auth do
   @doc """
   Returns an auth request by its unique secure hash.
 
-  Raises `Ecto.NoResultsError` if the AuthRequest does not exist.
+  Raises `Ecto.NoResultsError` if the Request does not exist.
   """
-  def get_auth_request!(secure_hash) do
-    AuthRequest
+  def get_request!(secure_hash) do
+    Request
     |> Repo.get_by!(secure_hash: secure_hash)
     |> Repo.preload(:user)
   end
 
   @doc """
+  Returns a resuest by its unique secure hash, or nil.
+  """
+  def get_request(secure_hash) do
+    if request = Request
+                 |> Repo.get_by(secure_hash: secure_hash)
+                 |> Repo.preload(:user) do
+      {:ok, request}
+    else
+      {:error, :not_found}
+    end
+  end
+
+  @doc """
   Verify that the token in the specified auth request or session is valid.
   """
-  def verify(%AuthRequest{token: token}) do
-    max_age = Application.fetch_env!(:octopus, :auth_request_expiry)
-    Token.verify(Endpoint, auth_request_salt(), token, max_age: max_age)
+  def verify(%Request{token: token}) do
+    max_age = Application.fetch_env!(:octopus, :request_expiry)
+    Token.verify(Endpoint, request_salt(), token, max_age: max_age)
   end
 
   def verify(%Session{token: token}) do
@@ -82,6 +95,19 @@ defmodule Octopus.Accounts.Auth do
   end
 
   @doc """
+  Returns a session by its unique secure hash, or nil.
+  """
+  def get_session(secure_hash) do
+    if session = Session
+                 |> Repo.get_by(secure_hash: secure_hash)
+                 |> Repo.preload(:user) do
+      {:ok, session}
+    else
+      {:error, :not_found}
+    end
+  end
+
+  @doc """
   Extends a session by resetting the token in the database.
   """
   def extend_session(%Session{token: token, user_id: user_id} = session) do
@@ -103,7 +129,7 @@ defmodule Octopus.Accounts.Auth do
   @doc """
   Deletes an auth request or session.
   """
-  def delete(%AuthRequest{} = auth_request), do: Repo.delete(auth_request)
+  def delete(%Request{} = request), do: Repo.delete(request)
 
   def delete(%Session{} = session), do: Repo.delete(session)
 
@@ -117,8 +143,8 @@ defmodule Octopus.Accounts.Auth do
   @doc """
   Prune expired auth requests.
   """
-  def delete_expired_auth_requests do
-    AuthRequest
+  def delete_expired_requests do
+    Request
     |> Repo.all()
     |> delete_expired()
   end

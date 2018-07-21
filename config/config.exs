@@ -9,8 +9,8 @@ use Mix.Config
 config :octopus,
   ecto_repos: [Octopus.Repo],
   generators: [binary_id: true],
-  auth_request_salt: "2/5mm5eunE3Io20vqREgr3UkEyb8JLz1oIGuko3ZXtuYy9rkzMGjLQV+mUfHEd8c",
-  auth_request_expiry: 3_600,
+  request_salt: "2/5mm5eunE3Io20vqREgr3UkEyb8JLz1oIGuko3ZXtuYy9rkzMGjLQV+mUfHEd8c",
+  request_expiry: 3_600,
   session_salt: "u0l1+3qnmise4kEFLxnwlc35BGtzgAPqpdQFaJIyr4J0IMSh+JedChUbtXGWqv7C",
   session_expiry: 86_400 * 30,
   refresh_expiry_interval: 86_400
